@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""The Proxy implementation."""
+"""The Proxy implementation"""
 
 
 class ProxyTypeFactory:
