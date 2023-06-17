@@ -112,16 +112,139 @@ class Proxy:
 
     # Creating Descriptor objects
     proxy_type = ProxyDescriptor()
+    """Gets and Sets `proxy_type`
+
+    Usage
+    -----
+    `self.proxy_type`
+    `self.proxy_type` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     auto_detect = ProxyTypeDescriptor("autodetect", ProxyType.AUTODETECT)
+    """Gets and Sets `auto_detect`
+
+    Usage
+    -----
+    `self.auto_detect`
+    `self.auto_detect` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     ftp_proxy = ProxyTypeDescriptor("ftpProxy", ProxyType.MANUAL)
+    """Gets and Sets `ftp_proxy`
+
+    Usage
+    -----
+    `self.ftp_proxy`
+    `self.ftp_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     http_proxy = ProxyTypeDescriptor("httpProxy", ProxyType.MANUAL)
+    """Gets and Sets `http_proxy`
+
+    Usage
+    -----
+    `self.http_proxy`
+    `self.http_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     no_proxy = ProxyTypeDescriptor("noProxy", ProxyType.MANUAL)
+    """Gets and Sets `no_proxy`
+
+    Usage
+    -----
+    `self.no_proxy`
+    `self.no_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     proxy_autoconfig_url = ProxyTypeDescriptor("proxyAutoconfigUrl", ProxyType.PAC)
+    """Gets and Sets `proxy_autoconfig_url`
+
+    Usage
+    -----
+    `self.proxy_autoconfig_url`
+    `self.proxy_autoconfig_url` = `value`
+
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     ssl_proxy = ProxyTypeDescriptor("sslProxy", ProxyType.MANUAL)
+    """Gets and Sets `ssl_proxy`
+
+    Usage
+    -----
+    `self.ssl_proxy`
+    `self.ssl_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     socks_proxy = ProxyTypeDescriptor("socksProxy", ProxyType.MANUAL)
+    """Gets and Sets `socks_proxy`
+
+    Usage
+    -----
+    `self.sock_proxy`
+    `self.socks_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     socks_username = ProxyTypeDescriptor("socksUsername", ProxyType.MANUAL)
+    """Gets and Sets `socks_password`
+
+    Usage
+    -----
+    `self.socks_password`
+    `self.socks_password` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     socks_password = ProxyTypeDescriptor("socksPassword", ProxyType.MANUAL)
+    """Gets and Sets `socks_password`
+
+    Usage
+    -----
+    `self.socks_password`
+    `self.socks_password` = `value`
+
+
+    Notes
+    -----
+    `value` should be `str`
+    """
     socks_version = ProxyTypeDescriptor("socksVersion", ProxyType.MANUAL)
+    """Gets and Sets `socks_version`
+
+    Usage
+    -----
+    `self.socks_version`
+    `self.socks_version` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
 
     def __init__(self, raw=None):
         """Creates a new Proxy.
