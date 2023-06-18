@@ -280,7 +280,7 @@ class PrintOptions:
 
     Notes
     -----
-    `value` should be `list` of page ranges. e.g. `[1-2]`
+    `value` should be `list` of page ranges. e.g `[1-2]`
     """
 
     def __init__(self) -> None:
