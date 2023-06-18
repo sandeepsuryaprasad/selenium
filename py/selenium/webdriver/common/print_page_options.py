@@ -60,7 +60,7 @@ else:
 
 
 class PageSettings:
-    """PageSettings descriptor which validates 'height' and 'width' of page."""
+    """PageSettings descriptor which validates `height` and 'width' of page."""
 
     def __init__(self, name):
         self.name = name
@@ -151,19 +151,137 @@ class ValidateType:
 
 class PrintOptions:
     page_height = PageSettings("height")
+    """Gets and Sets `page_height`
+
+    Usage
+    -----
+    `self.page_height`
+    `self.page_height` = `value`
+
+    Notes
+    -----
+    `value` should be positive `int` or `float`
+    """
     page_width = PageSettings("width")
+    """Gets and Sets `page_width`
 
+    Usage
+    -----
+    `self.page_width`
+    `self.page_width` = `value`
+
+    Notes
+    -----
+    `value` should be positive `int` or `float`
+    """
     margin_top = MarginSettings("top")
+    """Gets and Sets `margin_top`
+
+    Usage
+    -----
+    `self.margin_top`
+    `self.margin_top` = `value`
+
+    Notes
+    -----
+    `value` should be positive `int` or `float`
+    """
     margin_bottom = MarginSettings("bottom")
+    """Gets and Sets `margin_bottom`
+
+    Usage
+    -----
+    `self.margin_bottom`
+    `self.margin_bottom` = `value`
+
+    Notes
+    -----
+    `value` should be positive `int` or `float`
+    """
     margin_left = MarginSettings("left")
+    """Gets and Sets `margin_left`
+
+    Usage
+    -----
+    `self.margin_left`
+    `self.margin_left` = `value`
+
+    Notes
+    -----
+    `value` should be positive `int` or `float`
+    """
     margin_right = MarginSettings("right")
+    """Gets and Sets `margin_right`
 
+    Usage
+    -----
+    `self.margin_right`
+    `self.margin_right` = `value`
+
+    Notes
+    -----
+    `value` should be positive `int` or `float`
+    """
     scale = Scale("scale")
-    orientation = PageOrientation("orientation")
+    """Gets and Sets `scale`
 
+    Usage
+    -----
+    `self.scale`
+    `self.scale` = `value`
+
+    Notes
+    -----
+    `value` should be `int` or `float` between `0.1` and `2`
+    """
+    orientation = PageOrientation("orientation")
+    """Gets and Sets `orientation`
+
+    Usage
+    -----
+    `self.orientation`
+    `self.orientation` = `value`
+
+    Notes
+    -----
+    `value` should be either `portrait` or `landscape`
+    """
     background = ValidateType("background", bool)
+    """Gets and Sets `background`
+
+    Usage
+    -----
+    `self.background`
+    `self.background` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     shrink_to_fit = ValidateType("shrinkToFit", bool)
+    """Gets and Sets `shrink_to_fit`
+
+    Usage
+    -----
+    `self.shrink_to_fit`
+    `self.shrink_to_fit` = `value`
+
+    Notes
+    -----
+    `value` should be `bool`
+    """
     page_ranges = ValidateType("pageRanges", list)
+    """Gets and Sets `page_ranges`
+
+    Usage
+    -----
+    `self.page_ranges`
+    `self.page_ranges` = `value`
+
+    Notes
+    -----
+    `value` should be `list` of page ranges. e.g. `[1-2]`
+    """
 
     def __init__(self) -> None:
         self._print_options: _PrintOpts = {}
