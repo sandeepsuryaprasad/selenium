@@ -54,15 +54,15 @@ class Alert:
         self.driver = driver
 
     @property
-    def text(self) -> str:
+    def text(self):
         """Gets the text of the Alert."""
         return self.driver.execute(Command.W3C_GET_ALERT_TEXT)["value"]
 
-    def dismiss(self) -> None:
+    def dismiss(self):
         """Dismisses the alert available."""
         self.driver.execute(Command.W3C_DISMISS_ALERT)
 
-    def accept(self) -> None:
+    def accept(self):
         """Accepts the alert available.
 
         :Usage:
@@ -72,7 +72,7 @@ class Alert:
         """
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 
-    def send_keys(self, keysToSend) -> None:
+    def send_keys(self, keysToSend):
         """Send Keys to the Alert.
 
         :Args:
