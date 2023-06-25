@@ -126,22 +126,6 @@ class BaseOptions(metaclass=ABCMeta):
 
     # Creating _BaseOptions descriptors
     browser_version = _BaseOptions("browserVersion")
-    platform_name = _BaseOptions("platformName")
-    accept_insecure_certs = _BaseOptions("acceptInsecureCerts")
-    strict_file_interactability = _BaseOptions("strictFileInteractability")
-    set_window_rect = _BaseOptions("setWindowRect")
-
-    # Creating _PageLoadStrategy descriptor
-    page_load_strategy = _PageLoadStrategy("pageLoadStrategy")
-
-    # Creating _UnHandledPromptBehavior descriptor
-    unhandled_prompt_behavior = _UnHandledPromptBehavior("unhandledPromptBehavior")
-
-    # Creating _Timeouts descriptor
-    timeouts = _Timeouts("timeouts")
-
-    # Creating _Proxy descriptor
-    proxy = _Proxy("proxy")
     """Gets and Sets `borwser_version`
 
     Usage
