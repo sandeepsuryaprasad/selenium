@@ -25,6 +25,7 @@ class ElementScrollBehavior(Enum):
     BOTTOM = 1
 
 
+
 class _IeOptions:
     """IeOptions descriptor that validates below attributes.
 
