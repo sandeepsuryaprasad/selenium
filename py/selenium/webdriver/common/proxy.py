@@ -53,6 +53,47 @@ class ProxyType:
         raise Exception(f"No proxy type is found for {value}")
 
 
+class ProxyDescriptor:
+    """gets and sets proxyType on Proxy object."""
+
+    def __set__(self, obj, value):
+        getattr(obj, "_verify_proxy_type_compatibility")(value)
+        setattr(type(obj), "proxyType", value)
+
+    def __get__(self, obj, cls):
+        return getattr(type(obj), "proxyType")
+
+
+class ProxyTypeDescriptor:
+    """gets and sets below attributes on Proxy object.
+
+    - autodetect
+    - ftpProxy
+    - httpProxy
+    - noProxy
+    - proxyAutoconfigUrl
+    - sslProxy
+    - socksProxy
+    - socksUsername
+    - socksPassword
+    - socksVersion
+    """
+
+    def __init__(self, name, p_type):
+        self.name = name
+        self.p_type = p_type
+
+    def __get__(self, obj, cls):
+        return getattr(type(obj), self.name)
+
+    def __set__(self, obj, value):
+        if self.name == "autodetect" and not isinstance(value, bool):
+            raise ValueError("Autodetect proxy value needs to be a boolean")
+        getattr(obj, "_verify_proxy_type_compatibility")(self.p_type)
+        setattr(type(obj), "proxyType", self.p_type)
+        setattr(type(obj), self.name, value)
+
+
 class Proxy:
     """Proxy contains information about proxy type and necessary proxy
     settings."""
@@ -69,12 +110,149 @@ class Proxy:
     socksPassword = ""
     socksVersion = None
 
+    # Creating Descriptor objects
+    proxy_type = ProxyDescriptor()
+    """Gets and Sets `proxy_type`
+
+    Usage
+    -----
+    `self.proxy_type`
+    `self.proxy_type` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    auto_detect = ProxyTypeDescriptor("autodetect", ProxyType.AUTODETECT)
+    """Gets and Sets `auto_detect`
+
+    Usage
+    -----
+    `self.auto_detect`
+    `self.auto_detect` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    ftp_proxy = ProxyTypeDescriptor("ftpProxy", ProxyType.MANUAL)
+    """Gets and Sets `ftp_proxy`
+
+    Usage
+    -----
+    `self.ftp_proxy`
+    `self.ftp_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    http_proxy = ProxyTypeDescriptor("httpProxy", ProxyType.MANUAL)
+    """Gets and Sets `http_proxy`
+
+    Usage
+    -----
+    `self.http_proxy`
+    `self.http_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    no_proxy = ProxyTypeDescriptor("noProxy", ProxyType.MANUAL)
+    """Gets and Sets `no_proxy`
+
+    Usage
+    -----
+    `self.no_proxy`
+    `self.no_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    proxy_autoconfig_url = ProxyTypeDescriptor("proxyAutoconfigUrl", ProxyType.PAC)
+    """Gets and Sets `proxy_autoconfig_url`
+
+    Usage
+    -----
+    `self.proxy_autoconfig_url`
+    `self.proxy_autoconfig_url` = `value`
+
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    ssl_proxy = ProxyTypeDescriptor("sslProxy", ProxyType.MANUAL)
+    """Gets and Sets `ssl_proxy`
+
+    Usage
+    -----
+    `self.ssl_proxy`
+    `self.ssl_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    socks_proxy = ProxyTypeDescriptor("socksProxy", ProxyType.MANUAL)
+    """Gets and Sets `socks_proxy`
+
+    Usage
+    -----
+    `self.sock_proxy`
+    `self.socks_proxy` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    socks_username = ProxyTypeDescriptor("socksUsername", ProxyType.MANUAL)
+    """Gets and Sets `socks_password`
+
+    Usage
+    -----
+    `self.socks_password`
+    `self.socks_password` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    socks_password = ProxyTypeDescriptor("socksPassword", ProxyType.MANUAL)
+    """Gets and Sets `socks_password`
+
+    Usage
+    -----
+    `self.socks_password`
+    `self.socks_password` = `value`
+
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+    socks_version = ProxyTypeDescriptor("socksVersion", ProxyType.MANUAL)
+    """Gets and Sets `socks_version`
+
+    Usage
+    -----
+    `self.socks_version`
+    `self.socks_version` = `value`
+
+    Notes
+    -----
+    `value` should be `str`
+    """
+
     def __init__(self, raw=None):
         """Creates a new Proxy.
 
         :Args:
          - raw: raw proxy data. If None, default class values are used.
         """
+
         if raw:
             if "proxyType" in raw and raw["proxyType"]:
                 self.proxy_type = ProxyType.load(raw["proxyType"])
@@ -99,211 +277,26 @@ class Proxy:
             if "socksVersion" in raw and raw["socksVersion"]:
                 self.socks_version = raw["socksVersion"]
 
-    @property
-    def proxy_type(self):
-        """Returns proxy type as `ProxyType`."""
-        return self.proxyType
-
-    @proxy_type.setter
-    def proxy_type(self, value) -> None:
-        """Sets proxy type.
-
-        :Args:
-         - value: The proxy type.
-        """
-        self._verify_proxy_type_compatibility(value)
-        self.proxyType = value
-
-    @property
-    def auto_detect(self):
-        """Returns autodetect setting."""
-        return self.autodetect
-
-    @auto_detect.setter
-    def auto_detect(self, value) -> None:
-        """Sets autodetect setting.
-
-        :Args:
-         - value: The autodetect value.
-        """
-        if isinstance(value, bool):
-            if self.autodetect is not value:
-                self._verify_proxy_type_compatibility(ProxyType.AUTODETECT)
-                self.proxyType = ProxyType.AUTODETECT
-                self.autodetect = value
-        else:
-            raise ValueError("Autodetect proxy value needs to be a boolean")
-
-    @property
-    def ftp_proxy(self):
-        """Returns ftp proxy setting."""
-        return self.ftpProxy
-
-    @ftp_proxy.setter
-    def ftp_proxy(self, value) -> None:
-        """Sets ftp proxy setting.
-
-        :Args:
-         - value: The ftp proxy value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.ftpProxy = value
-
-    @property
-    def http_proxy(self):
-        """Returns http proxy setting."""
-        return self.httpProxy
-
-    @http_proxy.setter
-    def http_proxy(self, value) -> None:
-        """Sets http proxy setting.
-
-        :Args:
-         - value: The http proxy value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.httpProxy = value
-
-    @property
-    def no_proxy(self):
-        """Returns noproxy setting."""
-        return self.noProxy
-
-    @no_proxy.setter
-    def no_proxy(self, value) -> None:
-        """Sets noproxy setting.
-
-        :Args:
-         - value: The noproxy value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.noProxy = value
-
-    @property
-    def proxy_autoconfig_url(self):
-        """Returns proxy autoconfig url setting."""
-        return self.proxyAutoconfigUrl
-
-    @proxy_autoconfig_url.setter
-    def proxy_autoconfig_url(self, value) -> None:
-        """Sets proxy autoconfig url setting.
-
-        :Args:
-         - value: The proxy autoconfig url value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.PAC)
-        self.proxyType = ProxyType.PAC
-        self.proxyAutoconfigUrl = value
-
-    @property
-    def ssl_proxy(self):
-        """Returns https proxy setting."""
-        return self.sslProxy
-
-    @ssl_proxy.setter
-    def ssl_proxy(self, value) -> None:
-        """Sets https proxy setting.
-
-        :Args:
-         - value: The https proxy value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.sslProxy = value
-
-    @property
-    def socks_proxy(self):
-        """Returns socks proxy setting."""
-        return self.socksProxy
-
-    @socks_proxy.setter
-    def socks_proxy(self, value) -> None:
-        """Sets socks proxy setting.
-
-        :Args:
-         - value: The socks proxy value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.socksProxy = value
-
-    @property
-    def socks_username(self):
-        """Returns socks proxy username setting."""
-        return self.socksUsername
-
-    @socks_username.setter
-    def socks_username(self, value) -> None:
-        """Sets socks proxy username setting.
-
-        :Args:
-         - value: The socks proxy username value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.socksUsername = value
-
-    @property
-    def socks_password(self):
-        """Returns socks proxy password setting."""
-        return self.socksPassword
-
-    @socks_password.setter
-    def socks_password(self, value) -> None:
-        """Sets socks proxy password setting.
-
-        :Args:
-         - value: The socks proxy password value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.socksPassword = value
-
-    @property
-    def socks_version(self):
-        """Returns socks proxy version setting."""
-        return self.socksVersion
-
-    @socks_version.setter
-    def socks_version(self, value) -> None:
-        """Sets socks proxy version setting.
-
-        :Args:
-         - value: The socks proxy version value.
-        """
-        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
-        self.proxyType = ProxyType.MANUAL
-        self.socksVersion = value
-
     def _verify_proxy_type_compatibility(self, compatible_proxy):
         if self.proxyType not in (ProxyType.UNSPECIFIED, compatible_proxy):
-            raise Exception(
-                f"Specified proxy type ({compatible_proxy}) not compatible with current setting ({self.proxyType})"
-            )
+            raise Exception(f"Specified proxy type ({compatible_proxy}) not with current settings ({self.proxyType}")
 
     def to_capabilities(self):
         proxy_caps = {"proxyType": self.proxyType["string"].lower()}
-        if self.autodetect:
-            proxy_caps["autodetect"] = self.autodetect
-        if self.ftpProxy:
-            proxy_caps["ftpProxy"] = self.ftpProxy
-        if self.httpProxy:
-            proxy_caps["httpProxy"] = self.httpProxy
-        if self.proxyAutoconfigUrl:
-            proxy_caps["proxyAutoconfigUrl"] = self.proxyAutoconfigUrl
-        if self.sslProxy:
-            proxy_caps["sslProxy"] = self.sslProxy
-        if self.noProxy:
-            proxy_caps["noProxy"] = self.noProxy
-        if self.socksProxy:
-            proxy_caps["socksProxy"] = self.socksProxy
-        if self.socksUsername:
-            proxy_caps["socksUsername"] = self.socksUsername
-        if self.socksPassword:
-            proxy_caps["socksPassword"] = self.socksPassword
-        if self.socksVersion:
-            proxy_caps["socksVersion"] = self.socksVersion
+        proxies = [
+            "autodetect",
+            "ftpProxy",
+            "httpProxy",
+            "proxyAutoconfigUrl",
+            "sslProxy",
+            "noProxy",
+            "socksProxy",
+            "socksUsername",
+            "socksPassword",
+            "socksVersion",
+        ]
+        for proxy in proxies:
+            attr_value = getattr(self, proxy)
+            if attr_value:
+                proxy_caps[proxy] = attr_value
         return proxy_caps
