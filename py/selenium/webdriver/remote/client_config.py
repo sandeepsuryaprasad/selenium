@@ -71,7 +71,7 @@ class ClientConfig:
     """Gets and Sets user agent to be added to the request headers."""
     extra_headers = _ClientConfigDescriptor("_extra_headers")
     """Gets and Sets extra headers to be added to the request."""
-    
+
     def __init__(
         self,
         remote_server_addr: str,
@@ -117,11 +117,9 @@ class ClientConfig:
             else ca_certs
         )
 
-
     def reset_timeout(self) -> None:
         """Resets the timeout to the default value of socket."""
         self._timeout = socket.getdefaulttimeout()
-
 
     def get_proxy_url(self) -> Optional[str]:
         """Returns the proxy URL to use for the connection."""
