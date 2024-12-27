@@ -46,9 +46,9 @@ class _ClientConfigDescriptor:
 
 class ClientConfig:
     remote_server_addr = _ClientConfigDescriptor("_remote_server_addr")
-    """Gets and Sets Remote Server"""
+    """Gets and Sets Remote Server."""
     keep_alive = _ClientConfigDescriptor("_keep_alive")
-    """Gets and Sets Keep Alive value"""
+    """Gets and Sets Keep Alive value."""
     proxy = _ClientConfigDescriptor("_proxy")
     """Gets and Sets the proxy used for communicating to the driver/server."""
     ignore_certificates = _ClientConfigDescriptor("_ignore_certificates")
@@ -56,17 +56,20 @@ class ClientConfig:
     init_args_for_pool_manager = _ClientConfigDescriptor("_init_args_for_pool_manager")
     """Gets and Sets the ignore certificate check."""
     timeout = _ClientConfigDescriptor("_timeout")
-    """Gets and Sets the timeout (in seconds) used for communicating to the driver/server"""
+    """Gets and Sets the timeout (in seconds) used for communicating to the
+    driver/server."""
     ca_certs = _ClientConfigDescriptor("_ca_certs")
     """Gets and Sets the path to bundle of CA certificates."""
     username = _ClientConfigDescriptor("_username")
-    """Gets and Sets the username used for basic authentication to the remote"""
+    """Gets and Sets the username used for basic authentication to the
+    remote."""
     password = _ClientConfigDescriptor("_password")
-    """Gets and Sets the password used for basic authentication to the remote"""
+    """Gets and Sets the password used for basic authentication to the
+    remote."""
     auth_type = _ClientConfigDescriptor("_auth_type")
     """Gets and Sets the type of authentication to the remote server."""
     token = _ClientConfigDescriptor("_token")
-    """Gets and Sets the token used for authentication to the remote server"""
+    """Gets and Sets the token used for authentication to the remote server."""
     user_agent = _ClientConfigDescriptor("_user_agent")
     """Gets and Sets user agent to be added to the request headers."""
     extra_headers = _ClientConfigDescriptor("_extra_headers")
