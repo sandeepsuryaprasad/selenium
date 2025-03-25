@@ -329,6 +329,8 @@ def driver(request):
     if driver_instance is None:
         driver_instance = selenium_driver.driver
 
+    driver_instance = selenium_driver.driver
+
     yield driver_instance
     # Close the browser after BiDi tests. Those make event subscriptions
     # and doesn't seems to be stable enough, causing the flakiness of the
