@@ -340,8 +340,6 @@ def driver(request):
     if request.node.get_closest_marker("no_driver_after_test"):
         driver_instance = None
 
-    driver_instance.quit()
-
 
 @pytest.fixture(scope="session", autouse=True)
 def stop_driver(request):
