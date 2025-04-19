@@ -145,9 +145,6 @@ class SupportedBidiDrivers(ContainerProtocol):
 
 
 class Driver:
-    _supported_drivers = SupportedDrivers()
-    _supported_options = SupportedOptions()
-
     def __init__(self, driver_class, request):
         self.driver_class = driver_class
         self._request = request
@@ -187,9 +184,9 @@ class Driver:
 
     @driver_class.setter
     def driver_class(self, cls_name):
-        if cls_name.lower() not in self._supported_drivers:
+        if cls_name.lower() not in self.supported_drivers:
             raise AttributeError(f"Invalid driver class {cls_name.lower()}")
-        self._driver_class = getattr(self._supported_drivers, cls_name.lower())
+        self._driver_class = getattr(self.supported_drivers, cls_name.lower())
 
     @property
     def exe_platform(self):
@@ -325,6 +322,11 @@ def driver(request):
         if driver_class.lower() not in selenium_driver.supported_bidi_drivers:
             pytest.skip(f"{driver_class} does not support BiDi")
 
+    # skip tests for drivers that don't support BiDi when --bidi is enabled
+    if selenium_driver.bidi:
+        if driver_class.lower() not in selenium_driver.supported_bidi_drivers:
+            pytest.skip(f"{driver_class} does not support BiDi")
+
     # conditionally mark tests as expected to fail based on driver
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
     if marker is not None:
@@ -343,6 +345,16 @@ def driver(request):
         driver_instance = selenium_driver.driver
 
     yield driver_instance
+    # Close the browser after BiDi tests. Those make event subscriptions
+    # and doesn't seems to be stable enough, causing the flakiness of the
+    # subsequent tests.
+    # Remove this when BiDi implementation and API is stable.
+    if selenium_driver.bidi:
+        request.addfinalizer(selenium_driver.stop_driver)
+
+    if request.node.get_closest_marker("no_driver_after_test"):
+        driver_instance = None
+
     # Close the browser after BiDi tests. Those make event subscriptions
     # and doesn't seems to be stable enough, causing the flakiness of the
     # subsequent tests.
