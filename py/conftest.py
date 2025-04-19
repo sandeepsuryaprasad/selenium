@@ -322,11 +322,6 @@ def driver(request):
         if driver_class.lower() not in selenium_driver.supported_bidi_drivers:
             pytest.skip(f"{driver_class} does not support BiDi")
 
-    # skip tests for drivers that don't support BiDi when --bidi is enabled
-    if selenium_driver.bidi:
-        if driver_class.lower() not in selenium_driver.supported_bidi_drivers:
-            pytest.skip(f"{driver_class} does not support BiDi")
-
     # conditionally mark tests as expected to fail based on driver
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
     if marker is not None:
