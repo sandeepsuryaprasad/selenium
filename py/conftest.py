@@ -27,7 +27,6 @@ from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
 
-
 drivers = (
     "chrome",
     "edge",
@@ -420,43 +419,6 @@ def server(request):
     server.start()
     yield server
     server.stop()
-    _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    url = f"http://{_host}:{_port}/status"
-    try:
-        _socket.connect((_host, _port))
-        print(
-            "The remote driver server is already running or something else"
-            "is using port {}, continuing...".format(_port)
-        )
-    except Exception:
-        remote_env = os.environ.copy()
-        if platform.system() == "Linux":
-            # There are issues with window size/position when running Firefox
-            # under Wayland, so we use XWayland instead.
-            remote_env["MOZ_ENABLE_WAYLAND"] = "0"
-        print("Starting the Selenium server")
-        process = subprocess.Popen(
-            [
-                "java",
-                "-jar",
-                _path,
-                "standalone",
-                "--port",
-                "4444",
-                "--selenium-manager",
-                "true",
-                "--enable-managed-downloads",
-                "true",
-            ],
-            env=remote_env,
-        )
-        print(f"Selenium server running as process: {process.pid}")
-        assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"
-        print("Selenium server is ready")
-        yield process
-        process.terminate()
-        process.wait()
-        print("Selenium server has been terminated")
 
 
 @pytest.fixture(autouse=True, scope="session")
