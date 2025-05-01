@@ -528,7 +528,11 @@ def firefox_options(request):
     # skip tests in the 'remote' directory if run with a local driver
     _driver_class = getattr(_supported_drivers, driver_class.lower())
     if request.node.path.parts[-2] == "remote" and _driver_class != "Remote":
+<<<<<<< HEAD
         pytest.skip(f"Remote tests can't be run with driver '{_driver_class}'")
+=======
+        pytest.skip(f"Remote tests can't be run with driver '{selenium_driver.driver_class}'")
+>>>>>>> 35c2a28003 (fixed linting issues)
 
     options = webdriver.FirefoxOptions()
     if request.config.option.headless:
