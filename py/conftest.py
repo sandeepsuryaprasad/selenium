@@ -150,7 +150,6 @@ class Driver:
         self._request = request
         self._driver = None
         self._service = None
-        self.kwargs = {}
         self.options = driver_class
 
     @property
@@ -276,11 +275,12 @@ class Driver:
         return True
 
     def _initialize_driver(self):
+        kwargs = {}
         if self.options is not None:
-            self.kwargs["options"] = self.options
+            kwargs["options"] = self.options
         if self.driver_path is not None:
-            self.kwargs["service"] = self.service
-        return getattr(webdriver, self.driver_class)(**self.kwargs)
+            kwargs["service"] = self.service
+        return getattr(webdriver, self.driver_class)(**kwargs)
 
     @property
     def stop_driver(self):
