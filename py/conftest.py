@@ -149,7 +149,6 @@ class Driver:
         self.driver_class = driver_class
         self._request = request
         self._driver = None
-        self._platform = None
         self._service = None
         self.kwargs = {}
         self.options = driver_class
@@ -190,8 +189,7 @@ class Driver:
 
     @property
     def exe_platform(self):
-        self._platform = platform.system()
-        return self._platform
+        return platform.system()
 
     @property
     def browser_path(self):
@@ -264,7 +262,7 @@ class Driver:
             if self.driver_class == self.supported_drivers.webkitgtk:
                 self._options.overlay_scrollbars_enabled = False
             if self.browser_path is not None:
-                self._options.binary_location = browser_path.strip("'")
+                self._options.binary_location = self.browser_path.strip("'")
             if self.browser_args is not None:
                 for arg in self.browser_args.split():
                     self._options.add_argument(arg)
