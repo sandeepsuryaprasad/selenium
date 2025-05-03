@@ -176,16 +176,6 @@ class Driver:
         self._driver_class = getattr(self.supported_drivers, cls_name.lower())
 
     @property
-    def driver_class(self):
-        return self._driver_class
-
-    @driver_class.setter
-    def driver_class(self, cls_name):
-        if cls_name.lower() not in self.supported_drivers:
-            raise AttributeError(f"Invalid driver class {cls_name.lower()}")
-        self._driver_class = getattr(self.supported_drivers, cls_name.lower())
-
-    @property
     def exe_platform(self):
         return platform.system()
 
@@ -252,9 +242,9 @@ class Driver:
                     self._options.add_argument(arg)
 
         if self.headless:
-            if self.driver_class.lower() == "chrome" or self.driver_class.lower() == "edge":
+            if cls_name.lower() == "chrome" or cls_name.lower() == "edge":
                 self._options.add_argument("--headless=new")
-            if self.driver_class.lower() == "firefox":
+            if cls_name.lower() == "firefox":
                 self._options.add_argument("-headless")
 
         if self.bidi:
