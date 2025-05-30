@@ -488,6 +488,7 @@ def chromium_options(request):
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
+
     # Skip if not Chrome or Edge
     if driver_class not in ("chrome", "edge"):
         pytest.skip(f"This test requires Chrome or Edge, got {driver_class}")
