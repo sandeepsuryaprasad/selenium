@@ -154,6 +154,10 @@ class Driver:
         self.headless = driver_class
         self.bidi = driver_class
 
+    @classmethod
+    def clean_options(cls, driver_class, request):
+        return cls(driver_class, request).options
+
     @property
     def supported_drivers(self):
         return SupportedDrivers()
@@ -468,9 +472,7 @@ def clean_service(request):
 
 @pytest.fixture(scope="function")
 def clean_options(request):
-    driver_class = request.config.option.drivers[0].lower()
-    selenium_driver = Driver(driver_class, request)
-    yield selenium_driver.options
+    yield Driver.clean_options(driver_class, request)
 
 
 @pytest.fixture
@@ -485,9 +487,8 @@ def firefox_options(request):
     if selenium_driver.skip_remote_tests:
         pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
 
-    options = webdriver.FirefoxOptions()
-    if request.config.option.headless:
-        options.add_argument("-headless")
+    options = Driver.clean_options("firefox", request)
+
     return options
 
 
@@ -507,12 +508,8 @@ def chromium_options(request):
     if selenium_driver.skip_remote_tests:
         pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
 
-    if driver_class == "chrome":
-        options = webdriver.ChromeOptions()
-    elif driver_class == "edge":
-        options = webdriver.EdgeOptions()
-
-    if request.config.option.headless:
-        options.add_argument("--headless")
+    if driver_class in ("chrome", "edge"):
+        options = Driver.clean_options(driver_class, request)
 
     return options
+
