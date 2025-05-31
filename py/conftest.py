@@ -291,15 +291,6 @@ class Driver:
         return getattr(webdriver, self.driver_class)(**kwargs)
 
     @property
-    def skip_remote_tests(self):
-        if (
-            self._request.node.path.parts[-2] == "remote"
-            and self.driver_class != "Remote"
-        ):
-            return True
-        return False
-
-    @property
     def stop_driver(self):
         def fin():
             global driver_instance
@@ -327,7 +318,7 @@ def driver(request):
         )
 
     # skip tests in the 'remote' directory if run with a local driver
-    if selenium_driver.skip_remote_tests:
+    if request.node.path.parts[-2] == "remote" and selenium_driver.driver_class != "Remote":
         pytest.skip(
             f"Remote tests can't be run with driver '{selenium_driver.driver_class}'"
         )
@@ -478,14 +469,14 @@ def clean_options(request):
 
 @pytest.fixture
 def firefox_options(request):
+    _supported_drivers = SupportedDrivers()
     try:
-        driver_class = request.config.option.drivers[0]
+        driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
 
     # skip tests in the 'remote' directory if run with a local driver
-    selenium_driver = Driver(driver_class, request)
-    if selenium_driver.skip_remote_tests:
+    if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
         pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
 
     options = Driver.clean_options("firefox", request)
@@ -495,6 +486,7 @@ def firefox_options(request):
 
 @pytest.fixture
 def chromium_options(request):
+    _supported_drivers = SupportedDrivers()
     try:
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
@@ -504,9 +496,8 @@ def chromium_options(request):
     if driver_class not in ("chrome", "edge"):
         pytest.skip(f"This test requires Chrome or Edge, got {driver_class}")
 
-    selenium_driver = Driver(driver_class, request)
     # skip tests in the 'remote' directory if run with a local driver
-    if selenium_driver.skip_remote_tests:
+    if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
         pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
 
     if driver_class in ("chrome", "edge"):
