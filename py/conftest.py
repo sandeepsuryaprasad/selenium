@@ -472,6 +472,7 @@ def clean_service(request):
 
 @pytest.fixture(scope="function")
 def clean_options(request):
+    driver_class = request.config.option.drivers[0].lower()
     yield Driver.clean_options(driver_class, request)
 
 
@@ -512,4 +513,3 @@ def chromium_options(request):
         options = Driver.clean_options(driver_class, request)
 
     return options
-
