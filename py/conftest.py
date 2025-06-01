@@ -151,6 +151,8 @@ class Driver:
         self._driver = None
         self._service = None
         self.options = driver_class
+        self.browser_args = driver_class
+        self.browser_path = driver_class
         self.headless = driver_class
         self.bidi = driver_class
 
@@ -186,15 +188,28 @@ class Driver:
 
     @property
     def browser_path(self):
-        if self._request.config.option.binary:
-            return self._request.config.option.binary
+        if self._browser_path:
+            return self._browser_path
         return None
+
+    @browser_path.setter
+    def browser_path(self, driver_class):
+        self._browser_path = self._request.config.binary
+        if self._browser_path:
+            self._options.binary_location = self.browser_path.strip("'")
 
     @property
     def browser_args(self):
-        if self._request.config.option.args:
-            return self._request.config.option.args
+        if self._browser_args:
+            return self._browser_args
         return None
+
+    @browser_args.setter
+    def borwser_args(self, driver_class):
+        self._browser_args = self._request.config.args
+        if self._browser_args:
+            for arg in self.browser_args.split():
+                self._options.add_argument(arg)
 
     @property
     def driver_path(self):
@@ -252,11 +267,6 @@ class Driver:
         if self.browser_path or self.browser_args:
             if self.driver_class == self.supported_drivers.webkitgtk:
                 self._options.overlay_scrollbars_enabled = False
-            if self.browser_path is not None:
-                self._options.binary_location = self.browser_path.strip("'")
-            if self.browser_args is not None:
-                for arg in self.browser_args.split():
-                    self._options.add_argument(arg)
 
     @property
     def service(self):
