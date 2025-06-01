@@ -194,7 +194,7 @@ class Driver:
 
     @browser_path.setter
     def browser_path(self, driver_class):
-        self._browser_path = self._request.config.binary
+        self._browser_path = self._request.config.option.binary
         if self._browser_path:
             self._options.binary_location = self.browser_path.strip("'")
 
@@ -206,7 +206,7 @@ class Driver:
 
     @browser_args.setter
     def borwser_args(self, driver_class):
-        self._browser_args = self._request.config.args
+        self._browser_args = self._request.config.option.args
         if self._browser_args:
             for arg in self.browser_args.split():
                 self._options.add_argument(arg)
